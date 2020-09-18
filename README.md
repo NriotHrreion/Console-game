@@ -10,7 +10,7 @@ By NriotHrreion
 
 ## 如何游玩
 
-[https://nriothrreion.github.io/console-game](https://nriothrreion.github.io/console-game)
+[https://nriothrreion.github.io/Console-game/](https://nriothrreion.github.io/Console-game/)
 
 ## LICENSE
 
