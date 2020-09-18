@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>控制台小游戏</title>
+    <style>
+        body {font: 15px "Century Gothic", Futura, sans-serif}
+        .main {margin: 25px; outline: none}
+    </style>
+</head>
+<body>
+    <h1>控制台小游戏</h1>
+    <p>By NriotHrreion</p>
+    <b>注意: 游戏中途刷新页面(或退出网页)所有进度将全部丢失!!! 游戏仅支持电脑</b>
+    <hr>
+    <div class="main" tabindex="0">
+        <p id="tips">按下 Ctrl + Shift + J 开始游戏 (建议使用Chrome浏览器游玩)</p>
+        <div id="panel" style="display: none">
+            <h3>信息&状态</h3>
+            等级: <span id="i-lvl"></span>
+            <br>
+            钱包: <span id="i-bal"></span>
+            <br>
+            手持武器: <span id="i-wp"></span>
+            <br><br>
+            <div id="boss-panel" style="display: none">
+                当前你的血量: <span id="p-heart"></span>
+                <br>
+                当前 BOSS 血量: <span id="b-heart"></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        var script = document.createElement("script");
+        script.type = "module";
+        script.src = "main.js?r="+ Math.floor(Math.random() * (999999999 - 100000000 + 1) + 100000000);
+        document.body.appendChild(script);
+        document.body.removeChild(document.body.childNodes[11]);
+    </script>
+</body>
+</html>
