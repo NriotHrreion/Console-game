@@ -11,6 +11,7 @@ By NriotHrreion
 
 ## 如何游玩
 
+<<<<<<< HEAD
 进入网站: [https://nriothrreion.github.io/Console-game/](https://nriothrreion.github.io/Console-game/)
 
 ## 配置建议
@@ -28,6 +29,9 @@ By NriotHrreion
 - 建议在开始打怪时点击一下页面空白处
 - 建议不要催更, ~~毕竟我不是鸽子~~
 - 建议不开挂, 一步一步玩 (当然如果你硬要开我也不介意, 开挂教程参见Wiki)
+=======
+[https://nriothrreion.github.io/Console-game/](https://nriothrreion.github.io/Console-game/)
+>>>>>>> 3793d91e529f71f009e8503cc0273cfcf726fe16
 
 ## LICENSE
 
