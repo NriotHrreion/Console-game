@@ -19,7 +19,7 @@ By NriotHrreion
 
 - **设备:** 电脑 (必须)
 - **系统:** Windows / Linux / MacOS
-- **浏览器:** [Chrome](https://google.cn/chrome) / [Edge](https://microsoft/edge)
+- **浏览器:** [Chrome](https://google.cn/chrome) / [Edge](https://microsoft.com/edge)
 - **CPU:** 最好不要用太老旧的, 不然会卡
 
 ## 游玩建议
