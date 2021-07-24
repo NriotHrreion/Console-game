@@ -1,13 +1,11 @@
 <!DOCTYPE html>
+<!-- Copyright (c) NriotHrreion 2021 -->
 <html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>控制台小游戏</title>
-    <style>
-        body {font: 15px "Century Gothic", Futura, sans-serif}
-        .main {margin: 25px; outline: none}
-    </style>
+    <style>body{font:15px "Century Gothic",Futura,sans-serif} .main{margin:25px;outline:none}</style>
 </head>
 <body>
     <h1>控制台小游戏</h1>
@@ -32,12 +30,6 @@
             </div>
         </div>
     </div>
-    <script>
-        var script = document.createElement("script");
-        script.type = "module";
-        script.src = "main.js?r="+ Math.floor(Math.random() * (999999999 - 100000000 + 1) + 100000000);
-        document.body.appendChild(script);
-        document.body.removeChild(document.body.childNodes[11]);
-    </script>
+    <script>var a=document.createElement("script"),b=999999999,c=100000000;a.type="module";a.src="main.js?r="+Math.floor(Math.random()*(b-c+1)+c);document.body.appendChild(a)</script>
 </body>
 </html>

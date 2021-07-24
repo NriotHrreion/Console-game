@@ -1,20 +1,22 @@
 /**
- * Copyright (c) NriotHrreion 2020
+ * Copyright (c) NriotHrreion 2021
  * The Console Game
  */
 
 /**
- * @version 0.1.1
+ * @version 0.1.3
  * @license MIT
  */
-const version = "0.1.1";
+const version = "0.1.3";
 
 /**
  * @module Library
  * 
  * Import Library Module
  */
-import { lib } from "./lib.js";
+import { Lib, text as $ } from "./lib.js";
+
+const lib = new Lib();
 
 (function(window) {
     /**
@@ -24,7 +26,7 @@ import { lib } from "./lib.js";
     "use strict";
 
     const freezeObj = Object.freeze;
-    const freezeFunc = function() {};
+    const emptyFunc = function() {};
 
     /** @enum {Object} */
     const info_panel = {
@@ -42,10 +44,10 @@ import { lib } from "./lib.js";
     };
 
     var key_handles = {
-        W: freezeFunc,
-        A: freezeFunc,
-        S: freezeFunc,
-        D: freezeFunc
+        W: emptyFunc,
+        A: emptyFunc,
+        S: emptyFunc,
+        D: emptyFunc
     };
 
     var isGameBegin = false;
@@ -79,11 +81,11 @@ import { lib } from "./lib.js";
         constructor() {
             this.init();
             console.log(`
-%c控制台小游戏
-The Console Game
+%c${$("game.name")}
+By NriotHrreion
 %c================
    
-%c输入 start 开始游戏.
+%c${$("tip.start")}
 `,
                 "font-weight: bold",
                 "font-weight: 300",
@@ -103,22 +105,23 @@ The Console Game
                 isGameBegin = true;
             });
             lib.setCommand("help", () => {
-                lib.groupMessage("互动指令", [
-                    "start 开始游戏 (一次性指令)",
-                    "info 查看信息及状态",
-                    "beg_prtc 开启修炼之门 (一次性指令)",
-                    "g_main 回到主城"
+                lib.groupMessage($("group.commands"), [
+                    $("command.help.start"),
+                    $("command.help.info"),
+                    $("command.help.beg_prtc"),
+                    $("command.help.g_main")
                 ]);
             });
             lib.setCommand("info", () => {
-                lib.groupMessage("信息&状态", [
-                    "等级: "+ this.game.level,
-                    "钱包: "+ this.game.money +"$",
-                    "手持武器: "+ this.game.weapon.name +"(level "+ this.game.weapon.level +")"
+                lib.groupMessage($("group.info"), [
+                    $("command.info.level") +": "+ this.game.level,
+                    $("command.info.wallet") +": "+ this.game.money +"$",
+                    $("command.info.current_weapon") +": "+ this.game.weapon.name +"(level "+ this.game.weapon.level +")"
                 ]);
             });
 
             console.log("Version: "+ version);
+            console.log("Language detected: "+ window.navigator.language);
         }
     }
     
@@ -135,7 +138,7 @@ The Console Game
             this.level = 0;
             this.money = 0;
             this.weapon = {
-                name: "空",
+                name: $("text.empty"),
                 level: 0,
                 att: 0
             };
@@ -160,14 +163,14 @@ The Console Game
     
         gameBegin() {
             if(!isGameBegin) {
-                lib.npcSpeak("系统", "游戏开始! glhf!");
-                lib.npcSpeak("向导", "你好, 欢迎来到控制台的世界! 我是你的向导. 现在, 我将为你介绍在下面的游戏中会出现的消息类型:");
-                lib.warnMessage("这是警报");
-                lib.errMessage("这是危险");
-                lib.tips("输入 yes 开始主线任务 输入 help 查看所有互动指令");
+                lib.npcSpeak($("npc.system"), $("text.npc1"));
+                lib.npcSpeak($("npc.guide"), $("text.npc2"));
+                lib.warnMessage($("text.npc3"));
+                lib.errMessage($("text.npc4"));
+                lib.tips($("tip.start_game"));
                 lib.setCommand("yes", () => {this.startMission()});
             } else {
-                lib.npcSpeak("系统", "游戏已经开始了...");
+                lib.npcSpeak($("npc.system"), $("text.npc5"));
             }
         }
 
@@ -182,7 +185,7 @@ The Console Game
                 clearInterval(this.bossAttack);
                 this.overStory();
 
-                lib.tips("如果你想重新开始 请输入 restart");
+                lib.tips($("tip.restart"));
                 lib.setCommand("restart", () => {window.location.reload()});
             }
         }
@@ -192,8 +195,8 @@ The Console Game
             lib.delCommand("g_main");
 
             clearInterval(this.mobSpawner);
-            console.log("你被 "+ by +" 杀死了");
-            lib.tips("输入 respawn 重生并回到主城");
+            console.log($("message.death").replace("%s", by));
+            lib.tips($("tip.respawn"));
 
             lib.setCommand("respawn", () => {
                 this.mainMission();
@@ -207,56 +210,27 @@ The Console Game
          */
     
         startStory() {
-            console.log(`
-从前有个控制台, 控制台里有座后台城, 后台城中有老比特和小比特两人过着平凡的生活.
-而今天却是不平凡的一天......
-   
-早上, 老比特带着小比特去门口的早点摊买早餐, 忽然听见天上传来一阵机械声, 他们抬头一看, 发现是有人来访问网站了!
-他们所在的网站是一个小型博客网站, 平时一般没人访问这个站点, 但是今天却来了一位访客.
-这位访客头顶黑帽, 身穿黑衣, 戴着黑色口罩, 高高的鼻梁上架着一副墨镜.
-    
-"这人怎么这副打扮啊?" "好奇怪的访客!" "真不知道他究竟来干嘛" ....
-    
-街上的人你一言我一语, 讨论着这个奇怪的人.
-    
-小比特开始意识到事情的不对劲, 一般来说, 访客都是博客主的朋友、同学或者家人, 而这次来的人却不肯将自己的真面目展现出来, 这真是太可疑了!
-    
-突然, 一个巨大的代码怪兽从机械声中钻了出来, 它咆哮着, 它要摧毁后台城!!
-原来, 这只怪兽是那个黑衣访客召唤出来的, 它头上长着尖尖的犄角, 两颗尖牙闪着寒光, 一双眼睛中透着杀气, 整个天空布满了死的气息.
-   
-"啊!!!....."
-街上的一个人忽地被怪兽抓了起来, 怪兽用它的牙齿撕咬着那个人, 控制台开始大量输出警报:
-`);
-            lib.warnMessage("有黑客入侵!! 后台正在被侵占!!!")
-            console.log(`接着便是更多的人被吃掉....
-`);
-            lib.npcSpeak("小比特", "这个人真是太可恶了! 我一定要制裁他!");
-            lib.npcSpeak("老比特", "别着急, 这只怪兽看着真猛.");
-            lib.npcSpeak("小比特", "我一定有办法打倒他的....");
-            console.log(`又过了几年.. 原本一派繁荣的后台城变得乌烟瘴气...
-`);
+            console.log($("text.plot1"));
+            lib.warnMessage($("text.plot2"))
+            console.log($("text.plot3"));
+            lib.npcSpeak($("npc.little_bit"), $("text.npc6"));
+            lib.npcSpeak($("npc.old_bit"), $("text.npc7"));
+            lib.npcSpeak($("npc.little_bit"), $("text.npc8"));
+            console.log($("text.plot4"));
         }
 
         overStory() {
-            console.log(`
-巨代码怪死了, 后台城恢复了原本的繁荣景象.
-是的, 你拯救了整座后台城!!
-
-城中的人们欢呼着, 雀跃着, 庆祝着你的胜利.
-而天空中的黑客却说: "可恶! 我还会再来的!"
-
-......
-`);
-            console.log("%c完", "font-size: 17px; font-weight: bold");
+            console.log($("text.plot5"));
+            console.log("%c"+ $("text.game_finish"), "font-size: 17px; font-weight: bold");
         }
 
         bossStory() {
-            console.log("巨代码怪出现在了你的面前, 你紧握着"+ this.weapon.name +". 这一刻, 你充满了决心!!");
-            lib.npcSpeak("小比特", "不! 你不会摧毁后台城的!!!");
+            console.log($("text.plot6").replace("%s", this.weapon.name));
+            lib.npcSpeak($("npc.little_bit"), $("text.npc9"));
             // Chinese to Binary ( you dian chang? 2333
             // Chinese: 你是阻止不了我的!
-            lib.npcSpeak("巨代码怪", "111001001011110110100000 111001101001100010101111 111010011001100010111011 111001101010110110100010 111001001011100010001101 111001001011101010000110 111001101000100010010001 111001111001101010000100 00100001");
-            console.log("只见, 代码怪扑了上来. 它咆哮着, 嘶吼着. 但是你知道, 你背负着后台城的命运, 你永远也不能认输!");
+            lib.npcSpeak($("mob.super_code_mob"), "111001001011110110100000 111001101001100010101111 111010011001100010111011 111001101010110110100010 111001001011100010001101 111001001011101010000110 111001101000100010010001 111001111001101010000100 00100001");
+            console.log($("text.plot7"));
         }
 
         /**================================================================================
@@ -267,18 +241,10 @@ The Console Game
         startMission() {
             lib.delCommand("yes");
             this.startStory();
-            lib.tips("你就是小比特, 为了拯救后台城, 你来到了修炼社区, 接下来你准备: 开启漫漫修炼之路 (beg_prtc)");
+            lib.tips($("tip.beg_prtc"));
             lib.setCommand("beg_prtc", () => {
                 this.isBeginPrtc = true;
-                console.log(`
-修炼:
-
-打一个小代码怪升0.3 level, 打一个中代码怪升0.5 level, 打一个大代码怪升1 level, 打完巨型代码怪后结束游戏,
-大代码怪将会在你50 level的时候解锁, 巨型代码怪是最终boss, 将在你99 level时解锁.
-
-使用键盘 "W" "A" "S" "D" 键来刷怪.
-去副本修炼 (g_prtc) 去主城 (g_main)
-`);
+                console.log($("command.beg_prtc.explaination"));
                 this.giveWeapon(1);
                 this.giveLevel(1);
                 lib.setCommand("g_prtc", () => {lib.delCommand("g_main");this.prtcMission()});
@@ -295,9 +261,9 @@ The Console Game
                 this.mobs = [];
                 clearInterval(this.mobSpawner);
 
-                lib.groupMessage("[主城] 可进入的传送点", [
-                    "副本 (g_prtc)",
-                    "商店 (g_shop)"
+                lib.groupMessage($("group.hub"), [
+                    $("text.g_prtc"),
+                    $("text.g_shop")
                 ]);
 
                 lib.delCommand("g_main");
@@ -318,9 +284,9 @@ The Console Game
                         if(this.mobs[i].dir == 1) {
                             this.mobs[i].heart -= this.weapon.att;
                             if(this.mobs[i].heart > 0) {
-                                lib.npcSpeak("系统", "你攻击了一下怪物 怪物当前血量: "+ this.mobs[i].heart);
+                                lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart));
                             } else {
-                                lib.npcSpeak("系统", "你消灭了一只怪物");
+                                lib.npcSpeak($("npc.system"), $("message.kill"));
                                 this.killMobLevel(this.mobs[i].id);
                                 this.mobs.remove(this.mobs[i]);
                             }
@@ -335,9 +301,9 @@ The Console Game
                         if(this.mobs[i].dir == 3) {
                             this.mobs[i].heart -= this.weapon.att;
                             if(this.mobs[i].heart > 0) {
-                                lib.npcSpeak("系统", "你攻击了一下怪物 怪物当前血量: "+ this.mobs[i].heart);
+                                lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart));
                             } else {
-                                lib.npcSpeak("系统", "你消灭了一只怪物");
+                                lib.npcSpeak($("npc.system"), $("message.kill"));
                                 this.killMobLevel(this.mobs[i].id);
                                 this.mobs.remove(this.mobs[i]);
                             }
@@ -352,9 +318,9 @@ The Console Game
                         if(this.mobs[i].dir == 2) {
                             this.mobs[i].heart -= this.weapon.att;
                             if(this.mobs[i].heart > 0) {
-                                lib.npcSpeak("系统", "你攻击了一下怪物 怪物当前血量: "+ this.mobs[i].heart);
+                                lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart));
                             } else {
-                                lib.npcSpeak("系统", "你消灭了一只怪物");
+                                lib.npcSpeak($("npc.system"), $("message.kill"));
                                 this.killMobLevel(this.mobs[i].id);
                                 this.mobs.remove(this.mobs[i]);
                             }
@@ -369,9 +335,9 @@ The Console Game
                         if(this.mobs[i].dir == 4) {
                             this.mobs[i].heart -= this.weapon.att;
                             if(this.mobs[i].heart > 0) {
-                                lib.npcSpeak("系统", "你攻击了一下怪物 怪物当前血量: "+ this.mobs[i].heart);
+                                lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart));
                             } else {
-                                lib.npcSpeak("系统", "你消灭了一只怪物");
+                                lib.npcSpeak($("npc.system"), $("message.kill"));
                                 this.killMobLevel(this.mobs[i].id);
                                 this.mobs.remove(this.mobs[i]);
                             }
@@ -386,9 +352,9 @@ The Console Game
 
                 this.mobs = [];
 
-                lib.npcSpeak("系统", "你进入了副本");
-                lib.npcSpeak("系统", "刷怪前请先点击页面空白处!!!");
-                lib.npcSpeak("系统", "开始刷怪");
+                lib.npcSpeak($("npc.system"), $("text.npc10"));
+                lib.npcSpeak($("npc.system"), $("text.npc11"));
+                lib.npcSpeak($("npc.system"), $("text.npc12"));
 
                 lib.delCommand("g_prtc");
                 lib.delCommand("g_shop");
@@ -400,7 +366,7 @@ The Console Game
                     if(this.mobs.length <= 7) {
                         this.spawnMob();
                     } else {
-                        this.playerDeath("代码怪");
+                        this.playerDeath($("mob.code_mob"));
                     }
                 }, 3000);
             }
@@ -411,10 +377,10 @@ The Console Game
                 this.space = "shop";
 
                 var items = [
-                    {name: "符号剑(level 1) | 30$", price: 30, id: 2},
-                    {name: "嗜血剑(level 3) | 120$", price: 120, id: 3},
-                    {name: "比特剑(level 7) | 270$", price: 270, id: 4},
-                    {name: "弯月刃(level 9) | 340$", price: 340, id: 5},
+                    {name: $("weapon.symbol") +"(level 1) | 30$", price: 30, id: 2},
+                    {name: $("weapon.bloodthirsty") +"(level 3) | 120$", price: 120, id: 3},
+                    {name: $("weapon.bit_sword") +"(level 7) | 270$", price: 270, id: 4},
+                    {name: $("weapon.meniscus") +"(level 9) | 340$", price: 340, id: 5},
                 ];
                 var switcher = 0;
 
@@ -426,8 +392,8 @@ The Console Game
                     lib.delCommand("buy");
                 });
 
-                lib.npcSpeak("系统", "你进入了商店");
-                lib.groupMessage("商店货架", function() {
+                lib.npcSpeak($("npc.system"), $("text.npc13"));
+                lib.groupMessage($("group.shop"), function() {
                     var it = [];
                     for(let i in items) {
                         if(items[i].name != "") {
@@ -436,7 +402,7 @@ The Console Game
                     }
                     return it;
                 });
-                lib.tips("输入 select 来选择商品, 输入 buy 来购买商品");
+                lib.tips($("tip.shop"));
 
                 lib.setCommand("select", () => {
                     if(switcher < items.length - 1) {
@@ -444,13 +410,15 @@ The Console Game
                     } else {
                         switcher = 0;
                     }
-                    console.log("你选中了商品 %c"+ items[switcher].name, "color: yellow");
+                    console.log($("message.selected").replace("%s", items[switcher].name), "color: yellow");
                 });
                 lib.setCommand("buy", () => {
                     if(items[switcher].price <= this.money) {
                         this.money -= items[switcher].price;
                         this.giveWeapon(items[switcher].id);
-                        lib.npcSpeak("商店", "感谢购买! 你的钱包现在还剩 "+ this.money +"$");
+                        lib.npcSpeak($("npc.shop"), $("message.bought").replace("%s", this.money));
+                    } else {
+                        lib.npcSpeak($("npc.shop"), $("message.cant_afford"));
                     }
                 });
             }
@@ -527,8 +495,8 @@ The Console Game
 
                 updatePanel();
 
-                lib.npcSpeak("系统", "接下来你将面对强大的巨代码怪, 你可以通过 'W' 'A' 'S' 'D' 来打败它!");
-                lib.npcSpeak("系统", "在打怪前需点一下页面空白处!!!!");
+                lib.npcSpeak($("npc.system"), $("text.npc14"));
+                lib.npcSpeak($("npc.system"), $("text.npc11"));
                 lib.keysListener(boss_handles);
 
                 this.bossAttack = setInterval(() => {
@@ -537,23 +505,23 @@ The Console Game
 
                     switch(posi) {
                         case 0:
-                            lib.errMessage("巨代码怪出现在了 %c北边%c!", "font-weight: bold", "font-weight: 400");
+                            lib.errMessage($("text.boss.north"), "font-weight: bold", "font-weight: 400");
                             break;
                         case 1:
-                            lib.errMessage("巨代码怪出现在了 %c东边%c!", "font-weight: bold", "font-weight: 400");
+                            lib.errMessage($("text.boss.east"), "font-weight: bold", "font-weight: 400");
                             break;
                         case 2:
-                            lib.errMessage("巨代码怪出现在了 %c南边%c!", "font-weight: bold", "font-weight: 400");
+                            lib.errMessage($("text.boss.south"), "font-weight: bold", "font-weight: 400");
                             break;
                         case 3:
-                            lib.errMessage("巨代码怪出现在了 %c西边%c!", "font-weight: bold", "font-weight: 400");
+                            lib.errMessage($("text.boss.west"), "font-weight: bold", "font-weight: 400");
                             break;
                     }
 
                     setTimeout(() => {
                         if(!attack_flag) { // Player get hurt
                             player_heart -= 2;
-                            lib.warnMessage("你受到了 2 点伤害");
+                            lib.warnMessage($("message.hurt").replace("%s", "2"));
                             updatePanel();
                             if(player_heart <= 0) {
                                 this.playerDeath(boss.name);
@@ -579,12 +547,12 @@ The Console Game
     
         giveLevel(lvl) {
             this.level += lvl;
-            lib.npcSpeak("系统", "你获得了 %c经验 * "+ lvl +"%c 可通过指令 info 查询", "color: lightgreen", "color: white");
+            lib.npcSpeak($("npc.system"), $("message.got_level").replace("%s", lvl), "color: lightgreen", "color: white");
 
             if(this.level == 50) { // Big code mob
-                lib.npcSpeak("系统", "你的等级达到了 %c50%c, 已解锁 %c大代码怪%c!", "color: lightgreen", "color: white", "font-weight: bold", "font-weight: 400");
+                lib.npcSpeak($("npc.system"), $("message.unlock").replace("%s", "50").replace("%e", $("mob.large_code_mob")), "color: lightgreen", "color: white", "font-weight: bold", "font-weight: 400");
             } else if(this.level >= 99) { // BOSS code mob
-                lib.npcSpeak("系统", "你的等级达到了 %c99%c, 已解锁最终BOSS %c巨代码怪%c!", "color: lightgreen", "color: white", "font-weight: bold", "font-weight: 400");
+                lib.npcSpeak($("npc.system"), $("message.unlock").replace("%s", "99").replace("%e", $("mob.super_code_mob")), "color: lightgreen", "color: white", "font-weight: bold", "font-weight: 400");
                 
                 clearInterval(this.mobSpawner);
                 this.bossMission();
@@ -597,7 +565,7 @@ The Console Game
 
         giveMoney(money) {
             this.money += money;
-            lib.npcSpeak("系统", "你获得了 %c钱 * "+ money +"%c 可通过指令 info 查询", "color: lightblue", "color: white");
+            lib.npcSpeak($("npc.system"), $("message.got_money").replace("%s", money), "color: lightblue", "color: white");
 
             this.updateInfoPanel();
         }
@@ -609,7 +577,7 @@ The Console Game
                 level: weapon.level,
                 att: weapon.att
             };
-            lib.npcSpeak("系统", "你获得了 %c"+ weapon.name +"(level "+ weapon.level +") * 1%c 可通过指令 info 查询", "color: yellow", "color: white");
+            lib.npcSpeak($("npc.system"), $("message.got_weapon").replace("%s", weapon.name).replace("%e", weapon.level), "color: yellow", "color: white");
 
             this.updateInfoPanel();
         }
@@ -623,16 +591,16 @@ The Console Game
 
             switch(dir) {
                 case 1:
-                    lib.warnMessage("在 上面 出现了一只 "+ mob.name +" !");
+                    lib.warnMessage($("text.mob.north").replace("%s", mob.name));
                     break;
                 case 2:
-                    lib.warnMessage("在 下面 出现了一只 "+ mob.name +" !");
+                    lib.warnMessage($("text.mob.south").replace("%s", mob.name));
                     break;
                 case 3:
-                    lib.warnMessage("在 左面 出现了一只 "+ mob.name +" !");
+                    lib.warnMessage($("text.mob.west").replace("%s", mob.name));
                     break;
                 case 4:
-                    lib.warnMessage("在 右面 出现了一只 "+ mob.name +" !");
+                    lib.warnMessage($("text.mob.east").replace("%s", mob.name));
                     break;
             }
         }
