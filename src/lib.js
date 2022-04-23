@@ -20,9 +20,11 @@ const languages = {
  * @returns {string}
  */
 function $(key) {
-    return languages[window.navigator.language.replace("-", "_").toLowerCase()][key] == undefined ?
-        languages.zh_cn[key] :
-        languages[window.navigator.language.replace("-", "_").toLowerCase()][key];
+    try {
+        return languages[window.navigator.language.replace("-", "_").toLowerCase()][key];
+    } catch(e) {
+        return languages["zh_cn"][key];
+    }
 }
 
 /** @enum {Number} */
@@ -60,11 +62,15 @@ class Library {
     }
 
     setCommand(command, func) {
-        window[command] = command;
-        Object.defineProperty(window, command, {
-            get: func,
-            enumerable: true
-        });
+        try {
+            window[command] = command;
+            Object.defineProperty(window, command, {
+                get: func,
+                enumerable: true
+            });
+        } catch(e) {
+            // Do nothing
+        }
     }
 
     delCommand(command) {

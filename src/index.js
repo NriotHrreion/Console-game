@@ -4,10 +4,10 @@
  */
 
 /**
- * @version 0.1.3
+ * @version 0.1.1
  * @license MIT
  */
-const version = "0.1.3";
+const version = "0.1.1";
 
 /**
  * @module Library
@@ -89,7 +89,7 @@ By NriotHrreion
 `,
                 "font-weight: bold",
                 "font-weight: 300",
-                "font-weight: 400"
+                "font-weight: 400; color: #0e97ec"
             );
         }
     
@@ -120,8 +120,8 @@ By NriotHrreion
                 ]);
             });
 
-            console.log("Version: "+ version);
-            console.log("Language detected: "+ window.navigator.language);
+            console.log("%cVersion: %c"+ version, "color: yellow", "");
+            console.log("%cLanguage detected: %c"+ window.navigator.language, "color: yellow", "");
         }
     }
     
@@ -131,7 +131,7 @@ By NriotHrreion
      */
     class Game {
 
-        /** @constructor @summary Game Class Constructor, Game's body (??? */
+        /** @constructor */
         constructor() {
             this.isBeginPrtc = false;
             this.space = "begin";
