@@ -1,8 +1,9 @@
 {
   "name": "console_game",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "src/index.ts",
+  "home": ".",
   "scripts": {
     "start": "webpack-dev-server --open --port 3000 --mode production",
     "dev": "webpack-dev-server --open --port 3000 --mode development",
@@ -21,17 +22,21 @@
   "homepage": "https://github.com/NriotHrreion/console-game#readme",
   "dependencies": {
     "html-webpack-plugin": "^5.5.0",
+    "nriot-utils": "^0.1.2",
     "webpack": "^5.72.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
+    "@types/jest": "^27.4.1",
     "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.5",
     "clean-webpack-plugin": "^4.0.0",
     "jest": "^27.5.1",
     "jsdom": "^19.0.0",
     "terser-webpack-plugin": "^5.3.1",
+    "ts-jest": "^27.1.4",
+    "ts-loader": "^9.2.8",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1"
   }

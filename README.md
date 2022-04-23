@@ -11,7 +11,7 @@ By NriotHrreion
 
 ## 如何游玩
 
-在线: [http://console-game.nin.red](http://console-game.nin.red)
+在线: [https://console-game.nin.red](https://console-game.nin.red)
 
 ### 本地安装
 

@@ -1,25 +1,17 @@
-/**
- * Copyright (c) NriotHrreion 2021
- * The Console Game
- */
+import { VarTypes, Key, IWeapon, IMob } from "./types";
 
 /**
  * Import Languages
  */
-import zh_cn from "./lang/zh_cn.js";
-import en from "./lang/en.js";
+import zh_cn from "./lang/zh_cn";
+import en from "./lang/en";
 
 const languages = {
     zh_cn: zh_cn,
     en: en
 };
 
-/**
- * 
- * @param {string} key i18n key
- * @returns {string}
- */
-function $(key) {
+function $(key: string): string {
     try {
         return languages[window.navigator.language.replace("-", "_").toLowerCase()][key];
     } catch(e) {
@@ -27,16 +19,7 @@ function $(key) {
     }
 }
 
-/** @enum {Number} */
-const keys = {
-    W: 87, // up
-    A: 65, // left
-    S: 83, // down
-    D: 68  // right
-};
-
-/** @enum {Object} */
-const assets = {
+const assets: VarTypes.AssetsType = {
     WEAPONS: [
         {id: 1, name: $("weapon.iron_sword"), level: 0, att: 3},
         {id: 2, name: $("weapon.symbol"), level: 1, att: 4},
@@ -52,16 +35,14 @@ const assets = {
     ]
 };
 
-/**
- * @private
- * @class
- */
 class Library {
-    randomMath(min, max) {
+    public isGameBegin: boolean = false;
+
+    public randomMath(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
-    setCommand(command, func) {
+    public setCommand(command, func): void {
         try {
             window[command] = command;
             Object.defineProperty(window, command, {
@@ -73,11 +54,11 @@ class Library {
         }
     }
 
-    delCommand(command) {
+    public delCommand(command): void {
         delete window[command];
     }
 
-    getWeapon(id) {
+    public getWeapon(id: number): IWeapon {
         var weapons = assets.WEAPONS;
 
         for(let i in weapons) {
@@ -87,7 +68,7 @@ class Library {
         }
     }
 
-    getMob(id) {
+    public getMob(id: number): IMob {
         var mobs = assets.MOBS;
         
         for(let i in mobs) {
@@ -97,7 +78,7 @@ class Library {
         }
     }
 
-    npcSpeak(name, content, ...style) {
+    public npcSpeak(name: string, content: string, ...style: string[]): void {
         var args = '';
         for(let i in style) {
             if(typeof style[i] === "string") {
@@ -109,15 +90,15 @@ class Library {
         window.eval(log);
     }
 
-    warnMessage(content) {
+    public warnMessage(...content: string[]): void {
         console.warn("[%c"+ $("console.warn") +"%c] "+ content, "font-weight: bold", "font-weight: 400");
     }
 
-    errMessage(content) {
+    public errMessage(...content: string[]): void {
         console.error("[%c"+ $("console.err") +"%c] "+ content, "font-weight: bold", "font-weight: 400");
     }
 
-    groupMessage(groupName, groupCont) {
+    public groupMessage(groupName: string, groupCont: string[] | (() => string[])): void {
         if(typeof groupCont === "function") {
             groupCont = groupCont();
         }
@@ -131,29 +112,28 @@ class Library {
         console.groupEnd();
     }
 
-    tips(content) {
+    public tips(content): void {
         setTimeout(function() {console.log("%c"+ content, "font-style: italic; color: gray")}, 400);
     }
 
-    keysListener(handles) {
+    public keysListener(handles: VarTypes.KeyboardHandle): void {
         document.onkeydown = function(e) {
-            var eve = e || window.event;
 
-            switch(eve.keyCode) {
-                case keys.W:
-                    eve.preventDefault();
+            switch(e.key) {
+                case Key.W:
+                    e.preventDefault();
                     handles.W();
                     break;
-                case keys.A:
-                    eve.preventDefault();
+                case Key.A:
+                    e.preventDefault();
                     handles.A();
                     break;
-                case keys.S:
-                    eve.preventDefault();
+                case Key.S:
+                    e.preventDefault();
                     handles.S();
                     break;
-                case keys.D:
-                    eve.preventDefault();
+                case Key.D:
+                    e.preventDefault();
                     handles.D();
                     break;
             }
@@ -161,5 +141,5 @@ class Library {
     }
 }
 
-export var Lib = Library;
+export var Lib = new Library();
 export var text = $;

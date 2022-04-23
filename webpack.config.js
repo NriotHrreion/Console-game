@@ -6,7 +6,7 @@ const TerserWebpackPlugin = require("terser-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-    entry: "./src/index.js",
+    entry: "./src/index.ts",
     output: {
         path: path.resolve(__dirname, "build"),
         filename: "main.js"
@@ -14,10 +14,17 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?js$/,
+                test: /\.(js|mjs|ts)$/,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader"
+                }
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "ts-loader"
                 }
             }
         ]
@@ -40,6 +47,9 @@ module.exports = {
         minimizer: [new TerserWebpackPlugin({
             extractComments: false
         })]
+    },
+    resolve: {
+        extensions: [".ts", ".js", ".json"]
     },
     devtool: "source-map",
 };
