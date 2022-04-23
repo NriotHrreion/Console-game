@@ -11,14 +11,25 @@ By NriotHrreion
 
 ## 如何游玩
 
-进入网站: [https://nriothrreion.github.io/Console-game/](https://nriothrreion.github.io/Console-game/)
+在线: [http://console-game.nin.red](http://console-game.nin.red)
+
+### 本地安装
+
+```bash
+git clone https://github.com/NriotHrreion/Console-game.git
+npm i
+```
+
+```bash
+# http://localhost:3000
+npm run start
+```
 
 ## 配置建议
 
 下面是我建议的游玩配置:
 
 - **设备:** 电脑 (必须)
-- **系统:** Windows / Linux / MacOS
 - **浏览器:** [Chrome](https://google.cn/chrome) / [Edge](https://microsoft.com/edge)
 - **CPU:** 最好不要用太老旧的, 不然会卡
 
@@ -28,6 +39,12 @@ By NriotHrreion
 - 建议在开始打怪时点击一下页面空白处
 - 建议不要催更, ~~毕竟我不是鸽子~~
 - 建议不开挂, 一步一步玩 (当然如果你硬要开我也不介意, 开挂教程参见Wiki)
+
+## 测试
+
+```bash
+npm run test
+```
 
 ## LICENSE
 
