@@ -1,4 +1,5 @@
-import { VarTypes, Key, IWeapon, IMob } from "./types";
+import { VarTypes, Key, Weapon, Mob, Item } from "./types";
+import { NUtils } from "nriot-utils";
 
 /**
  * Import Languages
@@ -21,6 +22,7 @@ function $(key: string): string {
 
 const assets: VarTypes.AssetsType = {
     WEAPONS: [
+        {id: 0, name: $("text.empty"), level: 0, att: 0},
         {id: 1, name: $("weapon.iron_sword"), level: 0, att: 3},
         {id: 2, name: $("weapon.symbol"), level: 1, att: 4},
         {id: 3, name: $("weapon.bloodthirsty"), level: 3, att: 6},
@@ -32,6 +34,12 @@ const assets: VarTypes.AssetsType = {
         {id: 2, name: $("mob.medium_code_mob"), heart: 20},
         {id: 3, name: $("mob.large_code_mob"), heart: 40},
         {id: 4, name: $("mob.super_code_mob"), heart: 100}
+    ],
+    ITEMS: [
+        {name: $("weapon.symbol") +"(level 1) | 30$", price: 30, id: 2},
+        {name: $("weapon.bloodthirsty") +"(level 3) | 120$", price: 120, id: 3},
+        {name: $("weapon.bit_sword") +"(level 7) | 270$", price: 270, id: 4},
+        {name: $("weapon.meniscus") +"(level 9) | 340$", price: 340, id: 5},
     ]
 };
 
@@ -58,7 +66,7 @@ class Library {
         delete window[command];
     }
 
-    public getWeapon(id: number): IWeapon {
+    public getWeapon(id: number): Weapon {
         var weapons = assets.WEAPONS;
 
         for(let i in weapons) {
@@ -68,7 +76,7 @@ class Library {
         }
     }
 
-    public getMob(id: number): IMob {
+    public getMob(id: number): Mob {
         var mobs = assets.MOBS;
         
         for(let i in mobs) {
@@ -76,6 +84,10 @@ class Library {
                 return mobs[i];
             }
         }
+    }
+
+    public getItemList(): Item[] {
+        return assets.ITEMS;
     }
 
     public npcSpeak(name: string, content: string, ...style: string[]): void {
@@ -90,11 +102,11 @@ class Library {
         window.eval(log);
     }
 
-    public warnMessage(...content: string[]): void {
+    public warnMessage(content: string): void {
         console.warn("[%c"+ $("console.warn") +"%c] "+ content, "font-weight: bold", "font-weight: 400");
     }
 
-    public errMessage(...content: string[]): void {
+    public errMessage(content: string): void {
         console.error("[%c"+ $("console.err") +"%c] "+ content, "font-weight: bold", "font-weight: 400");
     }
 

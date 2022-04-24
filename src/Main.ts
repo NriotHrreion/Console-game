@@ -5,7 +5,6 @@ import Game from "./Game";
 export default class Main {
     private game: Game;
 
-    /** @constructor @summary Main Class Constructor, Game Runner (zhe me shuo si hu you dian bu dui */
     public constructor() {
         this.init();
         console.log(`

@@ -8,6 +8,7 @@
     "start": "webpack-dev-server --open --port 3000 --mode production",
     "dev": "webpack-dev-server --open --port 3000 --mode development",
     "build": "webpack --config webpack.config.js --mode production",
+    "build-dev": "webpack --config webpack.config.js --mode development",
     "test": "jest"
   },
   "repository": {

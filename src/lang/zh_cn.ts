@@ -109,9 +109,9 @@ export default {
     "text.mob.east": "在 右面 出现了一只 %s !",
     "text.mob.south": "在 下面 出现了一只 %s !",
     "text.mob.west": "在 左面 出现了一只 %s !",
-    "text.boss.north": "巨代码怪出现在了 %c北边%c!",
-    "text.boss.east": "巨代码怪出现在了 %c东边%c!",
-    "text.boss.south": "巨代码怪出现在了 %c南边%c!",
-    "text.boss.west": "巨代码怪出现在了 %c西边%c!",
+    "text.boss.north": "巨代码怪出现在了 北边!",
+    "text.boss.east": "巨代码怪出现在了 东边!",
+    "text.boss.south": "巨代码怪出现在了 南边!",
+    "text.boss.west": "巨代码怪出现在了 西边!",
     "text.empty": "空"
 }

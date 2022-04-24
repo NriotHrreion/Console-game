@@ -1,5 +1,5 @@
 import { Lib, text as $ } from "./lib";
-import { VarTypes } from "./types";
+import { Weapon, Space, VarTypes, Position } from "./types";
 import { info_panel, boss_panel } from "./types/vars";
 import { NUtils } from "nriot-utils";
 
@@ -12,45 +12,33 @@ var key_handles: VarTypes.KeyboardHandle = {
 }
 
 export default class Game {
-    private isBeginPrtc: boolean;
-    private space: string;
+    private isBeginPrtc: boolean = false;
+    private space: Space = Space.BEGIN;
 
-    public level: number;
-    public money: number;
-    public weapon: VarTypes.Weapon;
-    /** @todo */
-    public armor: object;
+    public level: number = 0;
+    public money: number = 0;
+    public weapon: Weapon = Lib.getWeapon(0);
+    public armor: VarTypes.ArmorSlot = {
+        head: {},
+        chest: {},
+        boots: {}
+    };
 
-    public mobs: VarTypes.Mob[];
-    private bossHeart: number;
-    private bossPosition: number;
+    public mobs: VarTypes.Entity[] = [];
+    private bossHeart: number = Lib.getMob(4).heart;
+    private bossPosition: Position = Position.NORTH;
 
-    /** @todo */
-    private bossAttack: any;
-    private mobSpawner: any;
+    private bossAttack: NodeJS.Timer;
+    private mobSpawner: NodeJS.Timer;
 
+    /**
+     * The constructor is for debugging
+     * @constructor
+     */
     public constructor() {
-        this.isBeginPrtc = false;
-        this.space = "begin";
-        this.level = 0;
-        this.money = 0;
-        this.weapon = {
-            name: $("text.empty"),
-            level: 0,
-            att: 0
-        };
-        this.armor = {
-            head: {},
-            chest: {},
-            boots: {}
-        };
-        this.mobs = [];
-        this.bossHeart = Lib.getMob(4).heart;
-        this.bossPosition = 0;
-
         // dev debug
-        // window.dev_level = (a) => {this.giveLevel(a)};
-        // window.dev_money = (a) => {this.giveMoney(a)};
+        // globalThis["dev_level"] = (a: number) => {this.giveLevel(a)};
+        // globalThis["dev_money"] = (a: number) => {this.giveMoney(a)};
     }
 
     /**================================================================================
@@ -75,7 +63,7 @@ export default class Game {
         if(Lib.isGameBegin) {
             Lib.isGameBegin = false;
 
-            this.space = "over";
+            this.space = Space.END;
 
             Lib.delCommand("g_main");
         
@@ -88,7 +76,7 @@ export default class Game {
     }
 
     private playerDeath(by: string): void {
-        this.space = "death";
+        this.space = Space.DEATH;
         Lib.delCommand("g_main");
 
         clearInterval(this.mobSpawner);
@@ -124,7 +112,7 @@ export default class Game {
     private bossStory(): void {
         console.log($("text.plot6").replace("%s", this.weapon.name));
         Lib.npcSpeak($("npc.little_bit"), $("text.npc9"));
-        // Chinese to Binary ( you dian chang? 2333
+        // Chinese to Binary
         // Chinese: 你是阻止不了我的!
         Lib.npcSpeak($("mob.super_code_mob"), "111001001011110110100000 111001101001100010101111 111010011001100010111011 111001101010110110100010 111001001011100010001101 111001001011101010000110 111001101000100010010001 111001111001101010000100 00100001");
         console.log($("text.plot7"));
@@ -152,8 +140,8 @@ export default class Game {
     }
 
     private mainMission(): void {
-        if(this.space != "main") {
-            this.space = "main";
+        if(this.space != Space.MAIN) {
+            this.space = Space.MAIN;
 
             this.mobs = [];
             clearInterval(this.mobSpawner);
@@ -177,7 +165,7 @@ export default class Game {
             
             // up
             W: () => {
-                for(let i in this.mobs) {
+                for(let i = 0; i < this.mobs.length; i++) {
                     if(this.mobs[i].dir == 1) {
                         this.mobs[i].heart -= this.weapon.att;
                         if(this.mobs[i].heart > 0) {
@@ -194,7 +182,7 @@ export default class Game {
 
             // left
             A: () => {
-                for(let i in this.mobs) {
+                for(let i = 0; i < this.mobs.length; i++) {
                     if(this.mobs[i].dir == 3) {
                         this.mobs[i].heart -= this.weapon.att;
                         if(this.mobs[i].heart > 0) {
@@ -211,7 +199,7 @@ export default class Game {
 
             // down
             S: () => {
-                for(let i in this.mobs) {
+                for(let i = 0; i < this.mobs.length; i++) {
                     if(this.mobs[i].dir == 2) {
                         this.mobs[i].heart -= this.weapon.att;
                         if(this.mobs[i].heart > 0) {
@@ -228,7 +216,7 @@ export default class Game {
 
             // right
             D: () => {
-                for(let i in this.mobs) {
+                for(let i = 0; i < this.mobs.length; i++) {
                     if(this.mobs[i].dir == 4) {
                         this.mobs[i].heart -= this.weapon.att;
                         if(this.mobs[i].heart > 0) {
@@ -244,8 +232,8 @@ export default class Game {
             }
         };
 
-        if(this.space != "prtc") {
-            this.space = "prtc";
+        if(this.space != Space.PRACTICE) {
+            this.space = Space.PRACTICE;
 
             this.mobs = [];
 
@@ -270,15 +258,10 @@ export default class Game {
     }
 
     private shopMission(): void {
-        if(this.space != "shop") {
-            this.space = "shop";
+        if(this.space != Space.SHOP) {
+            this.space = Space.SHOP;
 
-            var items = [
-                {name: $("weapon.symbol") +"(level 1) | 30$", price: 30, id: 2},
-                {name: $("weapon.bloodthirsty") +"(level 3) | 120$", price: 120, id: 3},
-                {name: $("weapon.bit_sword") +"(level 7) | 270$", price: 270, id: 4},
-                {name: $("weapon.meniscus") +"(level 9) | 340$", price: 340, id: 5},
-            ];
+            var items = Lib.getItemList();
             var switcher = 0;
 
             Lib.delCommand("g_shop");
@@ -329,66 +312,58 @@ export default class Game {
             
             // north
             W: () => {
-                if(this.bossPosition == 0 && this.bossHeart > 0) {
+                if(this.bossPosition == Position.NORTH && this.bossHeart > 0) {
                     this.bossHeart -= (this.weapon.att - 2);
                     attack_flag = true;
                     updatePanel();
-                } else if(this.bossPosition == 0) {
+                } else if(this.bossPosition == Position.NORTH) {
                     this.gameOver();
                 }
             },
 
             // east
             D: () => {
-                if(this.bossPosition == 1 && this.bossHeart > 0) {
+                if(this.bossPosition == Position.EAST && this.bossHeart > 0) {
                     this.bossHeart -= (this.weapon.att - 2);
                     attack_flag = true;
                     updatePanel();
-                } else if(this.bossPosition == 1) {
+                } else if(this.bossPosition == Position.EAST) {
                     this.gameOver();
                 }
             },
 
             // south
             S: () => {
-                if(this.bossPosition == 2 && this.bossHeart > 0) {
+                if(this.bossPosition == Position.SOUTH && this.bossHeart > 0) {
                     this.bossHeart -= (this.weapon.att - 2);
                     attack_flag = true;
                     updatePanel();
-                } else if(this.bossPosition == 2) {
+                } else if(this.bossPosition == Position.SOUTH) {
                     this.gameOver();
                 }
             },
 
             // west
             A: () => {
-                if(this.bossPosition == 3 && this.bossHeart > 0) {
+                if(this.bossPosition == Position.WEST && this.bossHeart > 0) {
                     this.bossHeart -= (this.weapon.att - 2);
                     attack_flag = true;
                     updatePanel();
-                } else if(this.bossPosition == 3) {
+                } else if(this.bossPosition == Position.WEST) {
                     this.gameOver();
                 }
             }
         };
         
-        if(this.space != "boss") {
-            this.space = "boss";
+        if(this.space != Space.BOSS) {
+            this.space = Space.BOSS;
 
             this.bossStory();
 
             var boss = Lib.getMob(4);
             var player_heart = 30;
 
-            /**
-             * BOSS Position
-             * 
-             * 0 => North
-             * 1 => East
-             * 2 => South
-             * 3 => West
-             */
-            this.bossPosition = 0;
+            this.bossPosition = Position.NORTH;
 
             updatePanel();
 
@@ -402,16 +377,16 @@ export default class Game {
 
                 switch(posi) {
                     case 0:
-                        Lib.errMessage($("text.boss.north"), "font-weight: bold", "font-weight: 400");
+                        Lib.errMessage($("text.boss.north"));
                         break;
                     case 1:
-                        Lib.errMessage($("text.boss.east"), "font-weight: bold", "font-weight: 400");
+                        Lib.errMessage($("text.boss.east"));
                         break;
                     case 2:
-                        Lib.errMessage($("text.boss.south"), "font-weight: bold", "font-weight: 400");
+                        Lib.errMessage($("text.boss.south"));
                         break;
                     case 3:
-                        Lib.errMessage($("text.boss.west"), "font-weight: bold", "font-weight: 400");
+                        Lib.errMessage($("text.boss.west"));
                         break;
                 }
 
@@ -468,13 +443,8 @@ export default class Game {
     }
 
     private giveWeapon(id: number): void {
-        var weapon = Lib.getWeapon(id);
-        this.weapon = {
-            name: weapon.name,
-            level: weapon.level,
-            att: weapon.att
-        };
-        Lib.npcSpeak($("npc.system"), $("message.got_weapon").replace("%s", weapon.name).replace("%e", weapon.level.toString()), "color: yellow", "color: white");
+        this.weapon = Lib.getWeapon(id);
+        Lib.npcSpeak($("npc.system"), $("message.got_weapon").replace("%s", this.weapon.name).replace("%e", this.weapon.level.toString()), "color: yellow", "color: white");
 
         this.updateInfoPanel();
     }
@@ -483,8 +453,9 @@ export default class Game {
         var dir = Lib.randomMath(1, 4); /* 1 up, 2 left, 3 down, 4 right */
         var id = this.level <= 50 ? Lib.randomMath(1, 2) : Lib.randomMath(1, 3);
         var mob = Lib.getMob(id);
+        var entity: VarTypes.Entity = {dir, id, name: mob.name, heart: mob.heart};
 
-        this.mobs[this.mobs.length] = {dir: dir, id: id, name: mob.name, heart: mob.heart};
+        this.mobs.push(entity);
 
         switch(dir) {
             case 1:
