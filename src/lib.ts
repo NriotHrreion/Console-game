@@ -45,6 +45,16 @@ const assets: VarTypes.AssetsType = {
 
 class Library {
     public isGameBegin: boolean = false;
+    /**
+     * This is in order to prevent the user press the `W` `A` `S` `D` keys at the same time.
+     * If two items in `keyboardStatus` is true, the press won't take effect. (The player won't cause damage to the mob)
+     */
+    private keyboardStatus = {
+        W: false,
+        A: false,
+        S: false,
+        D: false
+    };
 
     public randomMath(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
@@ -129,27 +139,58 @@ class Library {
     }
 
     public keysListener(handles: VarTypes.KeyboardHandle): void {
-        document.onkeydown = function(e) {
-
+        document.onkeydown = (e) => {
             switch(e.key) {
                 case Key.W:
                     e.preventDefault();
-                    handles.W();
+                    this.keyboardStatus.W = true;
+                    if(this.keyboardStatus.W && this.keyboardStatus.A === this.keyboardStatus.S === this.keyboardStatus.D === false) {
+                        handles.W();
+                    }
                     break;
                 case Key.A:
                     e.preventDefault();
-                    handles.A();
+                    this.keyboardStatus.A = true;
+                    if(this.keyboardStatus.A && this.keyboardStatus.W === this.keyboardStatus.S === this.keyboardStatus.D === false) {
+                        handles.A();
+                    }
                     break;
                 case Key.S:
                     e.preventDefault();
-                    handles.S();
+                    this.keyboardStatus.S = true;
+                    if(this.keyboardStatus.S && this.keyboardStatus.A === this.keyboardStatus.W === this.keyboardStatus.D === false) {
+                        handles.S();
+                    }
                     break;
                 case Key.D:
                     e.preventDefault();
-                    handles.D();
+                    this.keyboardStatus.D = true;
+                    if(this.keyboardStatus.D && this.keyboardStatus.A === this.keyboardStatus.S === this.keyboardStatus.W === false) {
+                        handles.D();
+                    }
                     break;
             }
-        }
+        };
+        document.onkeyup = (e) => {
+            switch(e.key) {
+                case Key.W:
+                    e.preventDefault();
+                    this.keyboardStatus.W = false;
+                    break;
+                case Key.A:
+                    e.preventDefault();
+                    this.keyboardStatus.A = false;
+                    break;
+                case Key.S:
+                    e.preventDefault();
+                    this.keyboardStatus.S = false;
+                    break;
+                case Key.D:
+                    e.preventDefault();
+                    this.keyboardStatus.D = false;
+                    break;
+            }
+        };
     }
 }
 

@@ -12,7 +12,7 @@ var key_handles: VarTypes.KeyboardHandle = {
 }
 
 export default class Game {
-    private isBeginPrtc: boolean = false;
+    private isBeginPrtc: boolean = false; // notice: Don't delete this variable
     private space: Space = Space.BEGIN;
 
     public level: number = 0;
