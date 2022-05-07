@@ -26,6 +26,20 @@ module.exports = {
                 use: {
                     loader: "ts-loader"
                 }
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    {
+                        loader: "style-loader"
+                    },
+                    {
+                        loader: "css-loader"
+                    },
+                    {
+                        loader: "less-loader"
+                    }
+                ]
             }
         ]
     },
@@ -36,6 +50,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "./public/index.html",
             filename: "index.html",
+            title: "控制台小游戏",
+            favicon: "public/favicon.png",
             minify: {
                 removeComments: false
             },

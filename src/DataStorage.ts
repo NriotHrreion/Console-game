@@ -13,14 +13,6 @@ export default class DataStorage {
         return DataStorage.instance;
     }
 
-    // public setItem(key: string, value: string): void {
-    //     window.localStorage.setItem(storageNamespace +"."+ key, value);
-    // }
-
-    // public getItem(key: string): string {
-    //     return window.localStorage.getItem(storageNamespace +"."+ key);
-    // }
-
     public setSave(save: VarTypes.LocalSave): void {
         this.storage.setItem(storageNamespace +".save", JSON.stringify(save));
     }
