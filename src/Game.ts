@@ -1,6 +1,7 @@
 import { Lib, text as $ } from "./lib";
 import { Weapon, Space, VarTypes, Position } from "./types";
 import { info_panel, boss_panel } from "./types/vars";
+import DataStorage from "./DataStorage";
 import { NUtils } from "nriot-utils";
 
 const emptyFunc = function() {};
@@ -47,6 +48,21 @@ export default class Game {
      */
 
     public gameBegin(): void {
+        var storage = DataStorage.get();
+        if(storage.isSaveExsit()) {
+            var save = storage.getSave();
+            this.money = save.money;
+            this.level = save.level;
+            this.weapon = save.weapon;
+            this.armor = save.armor;
+            
+            Lib.npcSpeak($("npc.system"), $("text.save_detected"));
+            console.log($("command.beg_prtc.explaination"));
+            Lib.setCommand("g_prtc", () => {Lib.delCommand("g_main");this.prtcMission()});
+            Lib.setCommand("g_main", () => {Lib.delCommand("g_prtc");this.mainMission()});
+            return;
+        }
+
         if(!Lib.isGameBegin) {
             Lib.npcSpeak($("npc.system"), $("text.npc1"));
             Lib.npcSpeak($("npc.guide"), $("text.npc2"));
@@ -419,6 +435,7 @@ export default class Game {
 
     private giveLevel(lvl: number): void {
         this.level += lvl;
+        this.level = parseFloat(this.level.toFixed(2));
         Lib.npcSpeak($("npc.system"), $("message.got_level").replace("%s", lvl.toString()), "color: lightgreen", "color: white");
 
         if(this.level == 50) { // Big code mob
@@ -500,5 +517,13 @@ export default class Game {
         info_panel.LVL.innerHTML = this.level.toString();
         info_panel.BAL.innerHTML = this.money +"$";
         info_panel.WEAPON.innerHTML = this.weapon.name +"(level "+ this.weapon.level +")";
+
+        // Save data
+        DataStorage.get().setSave({
+            money: this.money,
+            level: this.level,
+            weapon: this.weapon,
+            armor: this.armor
+        });
     }
 }

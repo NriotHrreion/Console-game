@@ -80,4 +80,11 @@ export namespace VarTypes {
         chest: Armor
         boots: Armor
     }
+
+    export interface LocalSave {
+        money: number
+        level: number
+        weapon: Weapon
+        armor: ArmorSlot
+    }
 }

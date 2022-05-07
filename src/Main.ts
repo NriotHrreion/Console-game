@@ -1,6 +1,7 @@
 import { Lib, text as $ } from "./lib";
 import { version } from "./types/vars";
 import Game from "./Game";
+import DataStorage from "./DataStorage";
 
 export default class Main {
     private game: Game;
@@ -36,7 +37,8 @@ By NriotHrreion
                 $("command.help.start"),
                 $("command.help.info"),
                 $("command.help.beg_prtc"),
-                $("command.help.g_main")
+                $("command.help.g_main"),
+                $("command.help.delsave")
             ]);
         });
         Lib.setCommand("info", () => {
@@ -45,6 +47,10 @@ By NriotHrreion
                 $("command.info.wallet") +": "+ this.game.money +"$",
                 $("command.info.current_weapon") +": "+ this.game.weapon.name +"(level "+ this.game.weapon.level +")"
             ]);
+        });
+        Lib.setCommand("delsave", () => {
+            DataStorage.get().deleteSave();
+            window.location.reload();
         });
 
         console.log("%cVersion: %c"+ version, "color: yellow", "");

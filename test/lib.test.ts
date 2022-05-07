@@ -1,13 +1,6 @@
 import { Lib } from "../src/lib";
 
 describe("Lib.js Tests", () => {
-    test("Get a random number", () => {
-        var num = Lib.randomMath(0, 10000);
-
-        expect(num).toBeLessThan(10000);
-        expect(num).toBeGreaterThan(0);
-    });
-
     test("Get info of a weapon", () => {
         var weapon = Lib.getWeapon(1);
 

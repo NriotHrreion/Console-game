@@ -118,5 +118,6 @@ Go to practice (g_prtc) or Go to the hub (g_main)
     "text.boss.east": "巨代码怪出现在了 东边!",
     "text.boss.south": "巨代码怪出现在了 南边!",
     "text.boss.west": "巨代码怪出现在了 西边!",
+    "text.save_detected": "Your local game save is detected, it's been loaded.",
     "text.empty": "Empty"
 }

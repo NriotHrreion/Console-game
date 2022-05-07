@@ -22,6 +22,7 @@ export default {
     "command.help.info": "info 查看信息及状态",
     "command.help.beg_prtc": "beg_prtc 开启修炼之门 (一次性指令)",
     "command.help.g_main": "g_main 回到主城",
+    "command.help.delsave": "delsave 删除存档并开始新游戏",
     "command.info.level": "等级",
     "command.info.wallet": "钱包",
     "command.info.current_weapon": "手持武器",
@@ -113,5 +114,6 @@ export default {
     "text.boss.east": "巨代码怪出现在了 东边!",
     "text.boss.south": "巨代码怪出现在了 南边!",
     "text.boss.west": "巨代码怪出现在了 西边!",
+    "text.save_detected": "检测到你有本地游戏存档, 已自动加载",
     "text.empty": "空"
 }

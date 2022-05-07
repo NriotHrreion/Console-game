@@ -57,7 +57,7 @@ class Library {
     };
 
     public randomMath(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1) + min);
+        return NUtils.getRandom(min, max);
     }
 
     public setCommand(command, func): void {
@@ -72,7 +72,7 @@ class Library {
         }
     }
 
-    public delCommand(command): void {
+    public delCommand(command: string): void {
         delete window[command];
     }
 
@@ -120,21 +120,21 @@ class Library {
         console.error("[%c"+ $("console.err") +"%c] "+ content, "font-weight: bold", "font-weight: 400");
     }
 
-    public groupMessage(groupName: string, groupCont: string[] | (() => string[])): void {
-        if(typeof groupCont === "function") {
-            groupCont = groupCont();
+    public groupMessage(groupName: string, groupContent: string[] | (() => string[])): void {
+        if(typeof groupContent === "function") {
+            groupContent = groupContent();
         }
 
         console.group(groupName);
-        for(let i in groupCont) {
-            if(typeof groupCont[i] === "string") {
-                console.log(groupCont[i]);
+        for(let i in groupContent) {
+            if(typeof groupContent[i] === "string") {
+                console.log(groupContent[i]);
             }
         }
         console.groupEnd();
     }
 
-    public tips(content): void {
+    public tips(content: string): void {
         setTimeout(function() {console.log("%c"+ content, "font-style: italic; color: gray")}, 400);
     }
 
