@@ -22,6 +22,7 @@ export default {
     "command.help.info": "'info' Check the info and status",
     "command.help.beg_prtc": "'beg_prtc' Begin to practice (One-off command)",
     "command.help.g_main": "'g_main' Back to the hub",
+    "command.help.delsave": "'delsave' Delete the local save and begin a new game",
     "command.info.level": "Level",
     "command.info.wallet": "Wallet",
     "command.info.current_weapon": "Current Weapon",
