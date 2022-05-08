@@ -1,4 +1,4 @@
-export const version = "0.2.0";
+export const version = "0.3.0";
 
 export const info_panel = {
     PANEL: document.getElementById("panel"),

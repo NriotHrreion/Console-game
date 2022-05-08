@@ -30,10 +30,10 @@ const assets: VarTypes.AssetsType = {
         {id: 5, name: $("weapon.meniscus"), level: 9, att: 12}
     ],
     MOBS: [
-        {id: 1, name: $("mob.small_code_mob"), heart: 10},
-        {id: 2, name: $("mob.medium_code_mob"), heart: 20},
-        {id: 3, name: $("mob.large_code_mob"), heart: 40},
-        {id: 4, name: $("mob.super_code_mob"), heart: 100}
+        {id: 1, type: "small_code_mob", name: $("mob.small_code_mob"), heart: 10},
+        {id: 2, type: "medium_code_mob", name: $("mob.medium_code_mob"), heart: 20},
+        {id: 3, type: "large_code_mob", name: $("mob.large_code_mob"), heart: 40},
+        {id: 4, type: "super_code_mob", name: $("mob.super_code_mob"), heart: 100}
     ],
     ITEMS: [
         {name: $("weapon.symbol") +"(level 1) | 30$", price: 30, id: 2},
@@ -56,8 +56,8 @@ class Library {
         D: false
     };
 
-    public randomMath(min: number, max: number): number {
-        return NUtils.getRandom(min, max);
+    public randomBoolean(p?: number): boolean {
+        return NUtils.getRandom(0, p || 1) === 0;
     }
 
     public setCommand(command, func): void {

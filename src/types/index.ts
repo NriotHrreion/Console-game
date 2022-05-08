@@ -13,6 +13,7 @@ export interface Armor {
 
 export interface Mob {
     id: number
+    type: string
     name: string
     heart: number
 }
@@ -51,6 +52,13 @@ export enum Position {
     WEST = 3
 }
 
+export enum Direction {
+    UP = 1,
+    DOWN = 2,
+    LEFT = 3,
+    RIGHT = 4
+}
+
 export enum ArmorKind {
     HEAD, CHEST, BOOTS
 }
@@ -72,7 +80,7 @@ export namespace VarTypes {
     }
 
     export interface Entity extends Mob {
-        dir: number
+        dir: Direction
     }
 
     export interface ArmorSlot {

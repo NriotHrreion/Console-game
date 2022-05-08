@@ -1,5 +1,5 @@
 import { Lib, text as $ } from "./lib";
-import { Weapon, Space, VarTypes, Position } from "./types";
+import { Weapon, Space, VarTypes, Position, Direction } from "./types";
 import { info_panel, boss_panel } from "./types/vars";
 import DataStorage from "./DataStorage";
 import { NUtils } from "nriot-utils";
@@ -177,73 +177,27 @@ export default class Game {
 
     private prtcMission(): void {
 
-        var prtc_handles = {
-            
-            // up
-            W: () => {
-                for(let i = 0; i < this.mobs.length; i++) {
-                    if(this.mobs[i].dir == 1) {
-                        this.mobs[i].heart -= this.weapon.att;
-                        if(this.mobs[i].heart > 0) {
-                            Lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart.toString()));
-                        } else {
-                            Lib.npcSpeak($("npc.system"), $("message.kill"));
-                            this.killMobLevel(this.mobs[i].id);
-                            NUtils.arrayItemDelete(this.mobs, i);
-                        }
-                        break;
-                    }
-                }
-            },
+        var common_handle = (dir: Direction) => {
+            for(let i = 0; i < this.mobs.length; i++) {
+                if(this.mobs[i].dir == dir) {
 
-            // left
-            A: () => {
-                for(let i = 0; i < this.mobs.length; i++) {
-                    if(this.mobs[i].dir == 3) {
-                        this.mobs[i].heart -= this.weapon.att;
-                        if(this.mobs[i].heart > 0) {
-                            Lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart.toString()));
-                        } else {
-                            Lib.npcSpeak($("npc.system"), $("message.kill"));
-                            this.killMobLevel(this.mobs[i].id);
-                            NUtils.arrayItemDelete(this.mobs, i);
-                        }
-                        break;
+                    // Crit damage (25%)
+                    if(Lib.randomBoolean(3)) {
+                        this.mobs[i].heart -= 2;
+                        Lib.npcSpeak(this.mobs[i].name, $("mob."+ this.mobs[i].type +".crit")[NUtils.getRandom(0, 2)]);
+                        
                     }
-                }
-            },
+                    // Common damage
+                    this.mobs[i].heart -= this.weapon.att;
 
-            // down
-            S: () => {
-                for(let i = 0; i < this.mobs.length; i++) {
-                    if(this.mobs[i].dir == 2) {
-                        this.mobs[i].heart -= this.weapon.att;
-                        if(this.mobs[i].heart > 0) {
-                            Lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart.toString()));
-                        } else {
-                            Lib.npcSpeak($("npc.system"), $("message.kill"));
-                            this.killMobLevel(this.mobs[i].id);
-                            NUtils.arrayItemDelete(this.mobs, i);
-                        }
-                        break;
+                    if(this.mobs[i].heart > 0) {
+                        Lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart.toString()));
+                    } else {
+                        Lib.npcSpeak($("npc.system"), $("message.kill"));
+                        this.killMobLevel(this.mobs[i].id);
+                        NUtils.arrayItemDelete(this.mobs, i);
                     }
-                }
-            },
-
-            // right
-            D: () => {
-                for(let i = 0; i < this.mobs.length; i++) {
-                    if(this.mobs[i].dir == 4) {
-                        this.mobs[i].heart -= this.weapon.att;
-                        if(this.mobs[i].heart > 0) {
-                            Lib.npcSpeak($("npc.system"), $("message.attack").replace("%s", this.mobs[i].heart.toString()));
-                        } else {
-                            Lib.npcSpeak($("npc.system"), $("message.kill"));
-                            this.killMobLevel(this.mobs[i].id);
-                            NUtils.arrayItemDelete(this.mobs, i);
-                        }
-                        break;
-                    }
+                    break;
                 }
             }
         };
@@ -261,7 +215,12 @@ export default class Game {
             Lib.delCommand("g_shop");
             Lib.setCommand("g_main", () => {this.mainMission()});
             
-            Lib.keysListener(prtc_handles);
+            Lib.keysListener({
+                W: () => common_handle(Direction.UP),
+                A: () => common_handle(Direction.LEFT),
+                S: () => common_handle(Direction.DOWN),
+                D: () => common_handle(Direction.RIGHT)
+            });
             
             this.mobSpawner = setInterval(() => {
                 if(this.mobs.length <= 7) {
@@ -321,53 +280,20 @@ export default class Game {
     }
 
     private bossMission(): void {
-        var _this = this;
+        var updatePanel = () => {
+            boss_panel.PANEL.style.display = "block";
+            boss_panel.P_HEART.innerHTML = player_heart.toString();
+            boss_panel.B_HEART.innerHTML = this.bossHeart.toString();
+        };
 
         var attack_flag = false;
-        var boss_handles = {
-            
-            // north
-            W: () => {
-                if(this.bossPosition == Position.NORTH && this.bossHeart > 0) {
-                    this.bossHeart -= (this.weapon.att - 2);
-                    attack_flag = true;
-                    updatePanel();
-                } else if(this.bossPosition == Position.NORTH) {
-                    this.gameOver();
-                }
-            },
-
-            // east
-            D: () => {
-                if(this.bossPosition == Position.EAST && this.bossHeart > 0) {
-                    this.bossHeart -= (this.weapon.att - 2);
-                    attack_flag = true;
-                    updatePanel();
-                } else if(this.bossPosition == Position.EAST) {
-                    this.gameOver();
-                }
-            },
-
-            // south
-            S: () => {
-                if(this.bossPosition == Position.SOUTH && this.bossHeart > 0) {
-                    this.bossHeart -= (this.weapon.att - 2);
-                    attack_flag = true;
-                    updatePanel();
-                } else if(this.bossPosition == Position.SOUTH) {
-                    this.gameOver();
-                }
-            },
-
-            // west
-            A: () => {
-                if(this.bossPosition == Position.WEST && this.bossHeart > 0) {
-                    this.bossHeart -= (this.weapon.att - 2);
-                    attack_flag = true;
-                    updatePanel();
-                } else if(this.bossPosition == Position.WEST) {
-                    this.gameOver();
-                }
+        var common_handle = (position: Position) => {
+            if(this.bossPosition == position && this.bossHeart > 0) {
+                this.bossHeart -= (this.weapon.att - 2);
+                attack_flag = true;
+                updatePanel();
+            } else if(this.bossPosition == position) {
+                this.gameOver();
             }
         };
         
@@ -385,13 +311,18 @@ export default class Game {
 
             Lib.npcSpeak($("npc.system"), $("text.npc14"));
             Lib.npcSpeak($("npc.system"), $("text.npc11"));
-            Lib.keysListener(boss_handles);
+            Lib.keysListener({
+                W: () => common_handle(Position.NORTH),
+                D: () => common_handle(Position.EAST),
+                S: () => common_handle(Position.SOUTH),
+                A: () => common_handle(Position.WEST)
+            });
 
             this.bossAttack = setInterval(() => {
-                var posi = Lib.randomMath(0, 3);
-                this.bossPosition = posi;
+                var position = NUtils.getRandom(0, 3);
+                this.bossPosition = position;
 
-                switch(posi) {
+                switch(position) {
                     case 0:
                         Lib.errMessage($("text.boss.north"));
                         break;
@@ -419,12 +350,6 @@ export default class Game {
                     }
                 }, 1000);
             }, 2000);
-        }
-
-        function updatePanel() {
-            boss_panel.PANEL.style.display = "block";
-            boss_panel.P_HEART.innerHTML = player_heart.toString();
-            boss_panel.B_HEART.innerHTML = _this.bossHeart.toString();
         }
     }
 
@@ -467,24 +392,24 @@ export default class Game {
     }
 
     private spawnMob(): void {
-        var dir = Lib.randomMath(1, 4); /* 1 up, 2 left, 3 down, 4 right */
-        var id = this.level <= 50 ? Lib.randomMath(1, 2) : Lib.randomMath(1, 3);
+        var dir = NUtils.getRandom(1, 4); /* 1 up, 2 left, 3 down, 4 right */
+        var id = this.level <= 50 ? NUtils.getRandom(1, 2) : NUtils.getRandom(1, 3);
         var mob = Lib.getMob(id);
-        var entity: VarTypes.Entity = {dir, id, name: mob.name, heart: mob.heart};
+        var entity: VarTypes.Entity = {dir, id, type: mob.type, name: mob.name, heart: mob.heart};
 
         this.mobs.push(entity);
 
         switch(dir) {
-            case 1:
+            case Direction.UP:
                 Lib.warnMessage($("text.mob.north").replace("%s", mob.name));
                 break;
-            case 2:
+            case Direction.DOWN:
                 Lib.warnMessage($("text.mob.south").replace("%s", mob.name));
                 break;
-            case 3:
+            case Direction.LEFT:
                 Lib.warnMessage($("text.mob.west").replace("%s", mob.name));
                 break;
-            case 4:
+            case Direction.RIGHT:
                 Lib.warnMessage($("text.mob.east").replace("%s", mob.name));
                 break;
         }
@@ -494,17 +419,17 @@ export default class Game {
         switch(id) {
             case 1:
                 this.giveLevel(0.1);
-                var rm = Lib.randomMath(1, 2);
+                var rm = NUtils.getRandom(1, 2);
                 if(rm == 2) this.giveMoney(1);
                 break;
             case 2:
                 this.giveLevel(0.3);
-                var rm = Lib.randomMath(1, 2);
+                var rm = NUtils.getRandom(1, 2);
                 if(rm == 2) this.giveMoney(3);
                 break;
             case 3:
                 this.giveLevel(0.5);
-                var rm = Lib.randomMath(1, 2);
+                var rm = NUtils.getRandom(1, 2);
                 if(rm == 2) this.giveMoney(5);
                 break;
         }
